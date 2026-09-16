@@ -6,6 +6,8 @@ import { subscribeToProducts, deleteProduct, updateStock } from '@/services/inve
 import { isFirebaseConfigured } from '@/config/firebase'
 import { formatPrice } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import { getEffectivePrice, getSaleStatusLabel, isSaleActive } from '@/utils/sale'
 
 export function AdminProductListPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -121,7 +123,16 @@ export function AdminProductListPage() {
                     </div>
                   </td>
                   <td className="p-3 capitalize text-ink-600">{product.category}</td>
-                  <td className="p-3 tabular-nums">{formatPrice(product.price)}</td>
+                  <td className="p-3 tabular-nums">
+                    <div className="flex items-center gap-1.5">
+                      <span>{formatPrice(getEffectivePrice(product))}</span>
+                      {getSaleStatusLabel(product) && (
+                        <Badge tone={isSaleActive(product) ? 'terracotta' : 'ink'}>
+                          {getSaleStatusLabel(product)}
+                        </Badge>
+                      )}
+                    </div>
+                  </td>
                   <td className="p-3">
                     <input
                       type="number"

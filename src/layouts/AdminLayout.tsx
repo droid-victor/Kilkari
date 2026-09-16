@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Package, LayoutDashboard, LogOut, ExternalLink } from 'lucide-react'
+import { Package, LayoutDashboard, LogOut, ExternalLink, Tag } from 'lucide-react'
 import clsx from 'clsx'
 import { brandConfig } from '@/config/brand'
 import { useAuthStore } from '@/store/authStore'
@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/authStore'
 const navItems = [
   { label: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
   { label: 'Products & Inventory', path: '/admin/products', icon: Package, end: false },
+  { label: 'Sales & Discounts', path: '/admin/sales', icon: Tag, end: false },
 ]
 
 export function AdminLayout() {
@@ -73,6 +74,23 @@ export function AdminLayout() {
             <LogOut size={16} /> Sign Out
           </button>
         </header>
+        <nav className="sm:hidden flex overflow-x-auto no-scrollbar border-b border-ink-900/8 bg-cream-50">
+          {navItems.map(({ label, path, icon: Icon, end }) => (
+            <NavLink
+              key={path}
+              to={path}
+              end={end}
+              className={({ isActive }) =>
+                clsx(
+                  'flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2',
+                  isActive ? 'border-terracotta-600 text-terracotta-600' : 'border-transparent text-ink-600',
+                )
+              }
+            >
+              <Icon size={16} /> {label}
+            </NavLink>
+          ))}
+        </nav>
         <main className="flex-1 p-4 sm:p-6 overflow-x-auto">
           <Outlet />
         </main>

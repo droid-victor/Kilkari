@@ -2,9 +2,13 @@
 //
 // Usage:
 //   1. Fill in .env.local with your Firebase project credentials.
-//   2. Run: node --experimental-strip-types scripts/seedFirestore.mjs
+//   2. Run with your admin password (never stored to disk):
+//        SEED_ADMIN_PASSWORD=yourpassword node --experimental-strip-types scripts/seedFirestore.mjs
 //      (requires Node 22.6+; on older Node, run `npm run build` first and
 //      adjust the import path below to the compiled products module)
+//
+// Firestore rules require an authenticated admin to write products, so this
+// script signs in as VITE_ADMIN_EMAIL before seeding.
 //
 // Safe to re-run: it overwrites each product document by id, it does not
 // duplicate. Intended to run ONCE per project to give the admin panel and
@@ -15,6 +19,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { initializeApp } from 'firebase/app'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -54,12 +59,27 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
   process.exit(1)
 }
 
+const adminEmail = process.env.VITE_ADMIN_EMAIL
+const adminPassword = process.env.SEED_ADMIN_PASSWORD
+
+if (!adminEmail || !adminPassword) {
+  console.error(
+    'Missing admin credentials. Set VITE_ADMIN_EMAIL in .env.local and pass ' +
+      'SEED_ADMIN_PASSWORD as an environment variable, e.g.:\n' +
+      '  SEED_ADMIN_PASSWORD=yourpassword node --experimental-strip-types scripts/seedFirestore.mjs',
+  )
+  process.exit(1)
+}
+
 const { products } = await import('../src/constants/products.ts')
 
 const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
 const db = getFirestore(app)
 
-console.log(`Seeding ${products.length} products into Firestore project "${firebaseConfig.projectId}"...`)
+await signInWithEmailAndPassword(auth, adminEmail, adminPassword)
+
+console.log(`Signed in as ${adminEmail}. Seeding ${products.length} products into Firestore project "${firebaseConfig.projectId}"...`)
 
 for (const product of products) {
   await setDoc(doc(db, 'products', product.id), { ...product, updatedAt: serverTimestamp() })

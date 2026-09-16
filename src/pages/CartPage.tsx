@@ -8,6 +8,7 @@ import { formatPrice } from '@/utils/format'
 import { businessConfig } from '@/config/business'
 import { Button } from '@/components/ui/Button'
 import { buildWhatsappUrl, cartOrderMessage } from '@/services/whatsappService'
+import { getEffectivePrice } from '@/utils/sale'
 
 export function CartPage() {
   const items = useCartStore((s) => s.items)
@@ -27,7 +28,10 @@ export function CartPage() {
     })
     .filter((x): x is { item: (typeof items)[number]; product: Product } => x !== null)
 
-  const subtotal = lineItems.reduce((sum, { item, product }) => sum + product.price * item.quantity, 0)
+  const subtotal = lineItems.reduce(
+    (sum, { item, product }) => sum + getEffectivePrice(product) * item.quantity,
+    0,
+  )
   const mrpTotal = lineItems.reduce((sum, { item, product }) => sum + product.mrp * item.quantity, 0)
   const discount = mrpTotal - subtotal
   const deliveryFee = subtotal >= businessConfig.freeShippingThreshold ? 0 : businessConfig.standardDeliveryFee
@@ -76,7 +80,9 @@ export function CartPage() {
                 <p className="text-xs text-ink-400 mt-0.5">
                   Size: {item.size} · Color: {item.color}
                 </p>
-                <p className="text-sm font-semibold text-ink-900 mt-1">{formatPrice(product.price)}</p>
+                <p className="text-sm font-semibold text-ink-900 mt-1">
+                  {formatPrice(getEffectivePrice(product))}
+                </p>
 
                 <div className="flex items-center justify-between mt-2">
                   <div className="flex items-center border border-ink-900/15 rounded-lg">
@@ -155,7 +161,7 @@ export function CartPage() {
                     size: item.size,
                     color: item.color,
                     quantity: item.quantity,
-                    price: product.price,
+                    price: getEffectivePrice(product),
                   })),
                   total,
                 ),

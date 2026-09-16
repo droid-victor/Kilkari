@@ -6,10 +6,13 @@ import { WishlistButton } from '@/components/product/WishlistButton'
 import { RatingStars } from '@/components/ui/RatingStars'
 import { Badge } from '@/components/ui/Badge'
 import { StockBadge } from '@/components/product/StockBadge'
+import { getEffectivePrice, isSaleActive } from '@/utils/sale'
 
 export function ProductCard({ product }: { product: Product }) {
   const [imgIndex, setImgIndex] = useState(0)
   const secondImage = product.images[1]
+  const effectivePrice = getEffectivePrice(product)
+  const onSale = isSaleActive(product)
 
   return (
     <Link
@@ -33,6 +36,7 @@ export function ProductCard({ product }: { product: Product }) {
           }}
         />
         <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+          {onSale && <Badge tone="error">Sale</Badge>}
           {product.newArrival && <Badge tone="sage">New</Badge>}
           {product.bestSeller && <Badge tone="terracotta">Bestseller</Badge>}
         </div>
@@ -50,7 +54,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <RatingStars rating={product.rating} reviewCount={product.reviewCount} size={12} />
-        <ProductPrice price={product.price} mrp={product.mrp} size="sm" />
+        <ProductPrice price={effectivePrice} mrp={product.mrp} size="sm" />
       </div>
     </Link>
   )

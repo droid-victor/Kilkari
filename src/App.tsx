@@ -27,6 +27,7 @@ import { AdminLoginPage } from '@/pages/admin/AdminLoginPage'
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
 import { AdminProductListPage } from '@/pages/admin/AdminProductListPage'
 import { AdminProductFormPage } from '@/pages/admin/AdminProductFormPage'
+import { AdminSalesPage } from '@/pages/admin/AdminSalesPage'
 
 function App() {
   return (
@@ -98,6 +99,7 @@ function App() {
           <Route path="products" element={<AdminProductListPage />} />
           <Route path="products/new" element={<AdminProductFormPage />} />
           <Route path="products/:id" element={<AdminProductFormPage />} />
+          <Route path="sales" element={<AdminSalesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

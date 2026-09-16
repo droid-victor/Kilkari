@@ -7,6 +7,7 @@ import { getAllProducts } from '@/services/productService'
 import { formatPrice } from '@/utils/format'
 import { businessConfig } from '@/config/business'
 import { Button } from '@/components/ui/Button'
+import { getEffectivePrice } from '@/utils/sale'
 
 type DeliveryMethod = 'delivery' | 'pickup'
 type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet' | 'cod'
@@ -45,7 +46,10 @@ export function CheckoutPage() {
     })
     .filter((x): x is { item: (typeof items)[number]; product: Product } => x !== null)
 
-  const subtotal = lineItems.reduce((sum, { item, product }) => sum + product.price * item.quantity, 0)
+  const subtotal = lineItems.reduce(
+    (sum, { item, product }) => sum + getEffectivePrice(product) * item.quantity,
+    0,
+  )
   const deliveryFee =
     deliveryMethod === 'pickup' || subtotal >= businessConfig.freeShippingThreshold
       ? 0
@@ -169,7 +173,7 @@ export function CheckoutPage() {
               <span className="text-ink-600 line-clamp-1 pr-2">
                 {product.name} x{item.quantity}
               </span>
-              <span className="shrink-0">{formatPrice(product.price * item.quantity)}</span>
+              <span className="shrink-0">{formatPrice(getEffectivePrice(product) * item.quantity)}</span>
             </div>
           ))}
           <div className="flex justify-between text-sm pt-2 border-t border-ink-900/10">

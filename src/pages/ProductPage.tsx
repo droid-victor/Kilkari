@@ -15,6 +15,7 @@ import { ProductCarousel } from '@/components/product/ProductCarousel'
 import { useCartStore } from '@/store/cartStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { buildWhatsappUrl, productInquiryMessage } from '@/services/whatsappService'
+import { getEffectivePrice } from '@/utils/sale'
 
 export function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -59,6 +60,7 @@ export function ProductPage() {
 
   const totalStock = product.onlineStock + product.storeStock
   const canAddToCart = product.onlineStock > 0 && (product.sizes.length === 0 || !!selectedSize)
+  const effectivePrice = getEffectivePrice(product)
 
   function handleAddToCart() {
     if (!product || !canAddToCart) return
@@ -104,7 +106,7 @@ export function ProductPage() {
 
           <RatingStars rating={product.rating} reviewCount={product.reviewCount} showValue size={16} />
 
-          <ProductPrice price={product.price} mrp={product.mrp} size="lg" />
+          <ProductPrice price={effectivePrice} mrp={product.mrp} size="lg" />
 
           {totalStock === 0 && (
             <p className="text-sm font-medium text-error-500">Currently out of stock</p>

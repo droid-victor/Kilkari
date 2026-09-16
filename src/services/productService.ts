@@ -1,6 +1,7 @@
 import { fetchAllProductsOnce } from '@/services/inventoryService'
 import type { Product, ProductCategory, Gender } from '@/types/product'
 import type { FilterState } from '@/store/filterStore'
+import { getEffectivePrice, isSaleActive } from '@/utils/sale'
 
 // Backed by Firestore when configured (see config/firebase.ts), otherwise
 // falls back to the bundled mock catalog — see inventoryService.ts.
@@ -89,16 +90,16 @@ export function applyFilters(list: Product[], filters: FilterState): Product[] {
     result = result.filter((p) => filters.brands.includes(p.brand))
   }
   if (filters.priceMin != null) {
-    result = result.filter((p) => p.price >= filters.priceMin!)
+    result = result.filter((p) => getEffectivePrice(p) >= filters.priceMin!)
   }
   if (filters.priceMax != null) {
-    result = result.filter((p) => p.price <= filters.priceMax!)
+    result = result.filter((p) => getEffectivePrice(p) <= filters.priceMax!)
   }
   if (filters.minRating != null) {
     result = result.filter((p) => p.rating >= filters.minRating!)
   }
   if (filters.onSaleOnly) {
-    result = result.filter((p) => p.mrp > p.price)
+    result = result.filter((p) => p.mrp > p.price || isSaleActive(p))
   }
   if (filters.pickupOnly) {
     result = result.filter((p) => p.pickupAvailable)
@@ -107,16 +108,18 @@ export function applyFilters(list: Product[], filters: FilterState): Product[] {
   const sorted = [...result]
   switch (filters.sortBy) {
     case 'price-asc':
-      sorted.sort((a, b) => a.price - b.price)
+      sorted.sort((a, b) => getEffectivePrice(a) - getEffectivePrice(b))
       break
     case 'price-desc':
-      sorted.sort((a, b) => b.price - a.price)
+      sorted.sort((a, b) => getEffectivePrice(b) - getEffectivePrice(a))
       break
     case 'rating':
       sorted.sort((a, b) => b.rating - a.rating)
       break
     case 'discount':
-      sorted.sort((a, b) => b.mrp - b.price - (a.mrp - a.price))
+      sorted.sort(
+        (a, b) => b.mrp - getEffectivePrice(b) - (a.mrp - getEffectivePrice(a)),
+      )
       break
     case 'newest':
       sorted.sort((a, b) => Number(b.newArrival) - Number(a.newArrival))

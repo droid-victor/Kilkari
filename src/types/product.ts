@@ -27,6 +27,12 @@ export interface ProductReview {
   helpfulCount: number
 }
 
+export interface ProductSale {
+  discountPercent: number
+  startsAt: string | null
+  endsAt: string | null
+}
+
 export interface Product {
   id: string
   sku: string
@@ -42,6 +48,7 @@ export interface Product {
   images: string[]
   price: number
   mrp: number
+  sale?: ProductSale | null
   sizes: string[]
   colors: ProductVariantColor[]
   material?: string

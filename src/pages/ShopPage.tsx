@@ -4,6 +4,7 @@ import { SlidersHorizontal } from 'lucide-react'
 import type { Product, ProductCategory, Gender } from '@/types/product'
 import { getAllProducts, applyFilters } from '@/services/productService'
 import { useFilterStore } from '@/store/filterStore'
+import { isSaleActive } from '@/utils/sale'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { FilterPanelContent } from '@/components/filters/FilterPanelContent'
 import { FilterDrawer } from '@/components/filters/FilterDrawer'
@@ -36,7 +37,7 @@ export function ShopPage({ title, description, category, gender, saleOnly }: Sho
     let list = allProducts
     if (category) list = list.filter((p) => p.category === category)
     if (gender) list = list.filter((p) => p.gender === gender || p.gender === 'unisex')
-    if (saleOnly) list = list.filter((p) => p.mrp > p.price)
+    if (saleOnly) list = list.filter((p) => p.mrp > p.price || isSaleActive(p))
 
     const filterParam = searchParams.get('filter')
     if (filterParam === 'new') list = list.filter((p) => p.newArrival)
