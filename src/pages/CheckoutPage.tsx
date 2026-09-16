@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Truck, Store, CreditCard, Smartphone, Landmark, Wallet, Banknote } from 'lucide-react'
-import type { Product } from '@/types/product'
+import { useNavigate, Navigate } from 'react-router-dom'
+import { Truck, Store, CreditCard, Smartphone, Landmark, Wallet, Banknote, AlertCircle } from 'lucide-react'
+import type { Product, DeliveryMethod, PaymentMethod } from '@/types/product'
 import { useCartStore } from '@/store/cartStore'
+import { useAuthStore } from '@/store/authStore'
 import { getAllProducts } from '@/services/productService'
+import { placeOrder } from '@/services/orderService'
+import { isPincodeServiceable } from '@/config/delivery'
 import { formatPrice } from '@/utils/format'
 import { businessConfig } from '@/config/business'
 import { Button } from '@/components/ui/Button'
 import { getEffectivePrice } from '@/utils/sale'
-
-type DeliveryMethod = 'delivery' | 'pickup'
-type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet' | 'cod'
 
 const paymentOptions: { value: PaymentMethod; label: string; icon: typeof CreditCard }[] = [
   { value: 'upi', label: 'UPI', icon: Smartphone },
@@ -23,21 +23,48 @@ const paymentOptions: { value: PaymentMethod; label: string; icon: typeof Credit
 export function CheckoutPage() {
   const items = useCartStore((s) => s.items)
   const clearCart = useCartStore((s) => s.clearCart)
+  const user = useAuthStore((s) => s.user)
+  const authLoading = useAuthStore((s) => s.loading)
   const [products, setProducts] = useState<Product[]>([])
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('delivery')
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi')
   const [placing, setPlacing] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
   const navigate = useNavigate()
+
+  const [fullName, setFullName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [addressLine1, setAddressLine1] = useState('')
+  const [city, setCity] = useState('')
+  const [pincode, setPincode] = useState('')
 
   useEffect(() => {
     getAllProducts().then(setProducts)
   }, [])
 
   useEffect(() => {
-    if (items.length === 0) {
+    // Skip the empty-cart redirect once an order has been placed — clearCart()
+    // runs right after navigating to the confirmation page, and without this
+    // guard that state change fires this effect and races the navigation,
+    // sometimes bouncing the user to /cart instead of /order-confirmation.
+    if (items.length === 0 && !placing) {
       navigate('/cart')
     }
-  }, [items.length, navigate])
+  }, [items.length, navigate, placing])
+
+  useEffect(() => {
+    if (user) {
+      setFullName((prev) => prev || user.displayName || '')
+    }
+  }, [user])
+
+  if (authLoading) {
+    return <div className="container-page py-16 text-center text-sm text-ink-400">Loading...</div>
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: '/checkout' }} replace />
+  }
 
   const lineItems = items
     .map((item) => {
@@ -60,12 +87,48 @@ export function CheckoutPage() {
     return null
   }
 
-  function handlePlaceOrder() {
+  async function handlePlaceOrder() {
+    setFormError(null)
+
+    if (!fullName.trim() || !phone.trim() || !addressLine1.trim() || !city.trim() || !pincode.trim()) {
+      setFormError('Please fill in all delivery address fields.')
+      return
+    }
+    if (deliveryMethod === 'delivery' && !isPincodeServiceable(pincode)) {
+      setFormError('Sorry, we currently only deliver to Sultanpur (228001). Choose Store Pickup instead.')
+      return
+    }
+
     setPlacing(true)
-    setTimeout(() => {
+    try {
+      const orderNumber = await placeOrder({
+        userId: user!.uid,
+        items: lineItems.map(({ item, product }) => ({
+          productId: product.id,
+          name: product.name,
+          slug: product.slug,
+          image: product.images[0] ?? '',
+          size: item.size,
+          color: item.color,
+          quantity: item.quantity,
+          price: getEffectivePrice(product),
+        })),
+        address: { fullName, phone, line1: addressLine1, city, pincode },
+        deliveryMethod,
+        paymentMethod,
+        subtotal,
+        deliveryFee,
+        total,
+      })
+      navigate('/order-confirmation', { state: { orderNumber } })
       clearCart()
-      navigate('/order-confirmation')
-    }, 900)
+      // Deliberately leave `placing` true on success — the component is
+      // navigating away, and resetting it here would race the empty-cart
+      // redirect effect above (see its comment).
+    } catch {
+      setFormError('Something went wrong placing your order. Please try again.')
+      setPlacing(false)
+    }
   }
 
   return (
@@ -79,27 +142,44 @@ export function CheckoutPage() {
             <div className="grid sm:grid-cols-2 gap-3">
               <input
                 placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 className="h-11 rounded-lg border border-ink-900/15 px-3 text-sm focus:outline-none focus:border-terracotta-500"
               />
               <input
                 placeholder="Phone Number"
                 type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 className="h-11 rounded-lg border border-ink-900/15 px-3 text-sm focus:outline-none focus:border-terracotta-500"
               />
               <input
                 placeholder="Address Line 1"
+                value={addressLine1}
+                onChange={(e) => setAddressLine1(e.target.value)}
                 className="h-11 rounded-lg border border-ink-900/15 px-3 text-sm sm:col-span-2 focus:outline-none focus:border-terracotta-500"
               />
               <input
                 placeholder="City"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
                 className="h-11 rounded-lg border border-ink-900/15 px-3 text-sm focus:outline-none focus:border-terracotta-500"
               />
               <input
                 placeholder="Pincode"
                 inputMode="numeric"
+                maxLength={6}
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                 className="h-11 rounded-lg border border-ink-900/15 px-3 text-sm focus:outline-none focus:border-terracotta-500"
               />
             </div>
+            {deliveryMethod === 'delivery' && pincode.length === 6 && !isPincodeServiceable(pincode) && (
+              <p className="flex items-center gap-1.5 text-xs text-error-500 mt-2">
+                <AlertCircle size={14} /> We currently only deliver to Sultanpur (228001). Choose
+                Store Pickup below instead.
+              </p>
+            )}
           </section>
 
           <section>
@@ -115,7 +195,7 @@ export function CheckoutPage() {
                 <Truck size={20} />
                 <div>
                   <p className="text-sm font-medium">Home Delivery</p>
-                  <p className="text-xs text-ink-400">2-3 business days</p>
+                  <p className="text-xs text-ink-400">Sultanpur (228001) only, for now</p>
                 </div>
               </button>
               <button
@@ -184,6 +264,7 @@ export function CheckoutPage() {
             <span>Total</span>
             <span>{formatPrice(total)}</span>
           </div>
+          {formError && <p className="text-sm text-error-500">{formError}</p>}
           <Button size="lg" onClick={handlePlaceOrder} disabled={placing}>
             {placing ? 'Placing Order...' : 'Place Order'}
           </Button>

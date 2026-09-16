@@ -16,6 +16,8 @@ import { FAQPage } from '@/pages/FAQPage'
 import { SizeGuidePage } from '@/pages/SizeGuidePage'
 import { ReturnsPage } from '@/pages/ReturnsPage'
 import { AccountPage } from '@/pages/AccountPage'
+import { LoginPage } from '@/pages/LoginPage'
+import { SignupPage } from '@/pages/SignupPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { AddressesPage } from '@/pages/AddressesPage'
 import { PrivacyPage } from '@/pages/PrivacyPage'
@@ -71,6 +73,8 @@ function App() {
           <Route path="wishlist" element={<WishlistPage />} />
 
           <Route path="account" element={<AccountPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="addresses" element={<AddressesPage />} />
           <Route path="returns" element={<ReturnsPage />} />

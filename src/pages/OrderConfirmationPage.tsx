@@ -1,9 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation, Navigate } from 'react-router-dom'
 import { CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 export function OrderConfirmationPage() {
-  const orderNumber = `LN${Math.floor(100000 + Math.random() * 900000)}`
+  const location = useLocation()
+  const orderNumber = (location.state as { orderNumber?: string } | null)?.orderNumber
+
+  if (!orderNumber) {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <div className="container-page py-16 flex flex-col items-center text-center gap-3">

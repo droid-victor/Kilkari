@@ -21,11 +21,21 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Orders: created by anyone (checkout is unauthenticated in this app),
-    // but only the admin can read the list or update order status.
+    // Orders: a signed-in customer can create their own order and read only
+    // their own orders (matched by userId); the admin can read/update/delete
+    // any order (e.g. to advance order status).
     match /orders/{orderId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Customer profiles: a signed-in user can create/read/update only their
+    // own profile document (doc id == their uid). Admin can read all.
+    match /customers/{uid} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == uid);
+      allow create, update: if request.auth != null && request.auth.uid == uid;
+      allow delete: if isAdmin();
     }
 
     // Everything else: locked down by default.

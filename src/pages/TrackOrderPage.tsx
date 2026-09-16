@@ -1,24 +1,33 @@
 import { useState } from 'react'
 import { Package, CheckCircle2, Truck, Home, Box } from 'lucide-react'
+import type { Order, OrderStatus } from '@/types/product'
+import { getOrderByNumberAndPhone } from '@/services/orderService'
 import { Button } from '@/components/ui/Button'
 
-const steps = [
-  { label: 'Placed', icon: Box },
-  { label: 'Confirmed', icon: CheckCircle2 },
-  { label: 'Packed', icon: Package },
-  { label: 'Shipped', icon: Truck },
-  { label: 'Delivered', icon: Home },
+const steps: { status: OrderStatus; label: string; icon: typeof Box }[] = [
+  { status: 'placed', label: 'Placed', icon: Box },
+  { status: 'confirmed', label: 'Confirmed', icon: CheckCircle2 },
+  { status: 'packed', label: 'Packed', icon: Package },
+  { status: 'shipped', label: 'Shipped', icon: Truck },
+  { status: 'delivered', label: 'Delivered', icon: Home },
 ]
 
 export function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState('')
   const [mobile, setMobile] = useState('')
-  const [tracked, setTracked] = useState(false)
+  const [order, setOrder] = useState<Order | null | undefined>(undefined)
+  const [searching, setSearching] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (orderNumber && mobile) setTracked(true)
+    if (!orderNumber || !mobile) return
+    setSearching(true)
+    const result = await getOrderByNumberAndPhone(orderNumber.trim(), mobile.trim())
+    setOrder(result)
+    setSearching(false)
   }
+
+  const currentStepIndex = order ? steps.findIndex((s) => s.status === order.status) : -1
 
   return (
     <div className="container-page py-10 max-w-2xl">
@@ -40,14 +49,22 @@ export function TrackOrderPage() {
           type="tel"
           className="h-11 flex-1 rounded-lg border border-ink-900/15 px-3 text-sm focus:outline-none focus:border-terracotta-500"
         />
-        <Button type="submit">Track</Button>
+        <Button type="submit" disabled={searching}>
+          {searching ? 'Searching...' : 'Track'}
+        </Button>
       </form>
 
-      {tracked && (
+      {order === null && (
+        <p className="mt-6 text-sm text-error-500">
+          We couldn't find an order with that number and mobile number. Please check and try again.
+        </p>
+      )}
+
+      {order && (
         <div className="mt-10 flex items-center justify-between">
           {steps.map((step, i) => {
             const Icon = step.icon
-            const active = i <= 2
+            const active = i <= currentStepIndex
             return (
               <div key={step.label} className="flex flex-col items-center gap-2 flex-1">
                 <div

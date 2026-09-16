@@ -1,4 +1,5 @@
 import { businessConfig } from '@/config/business'
+import { deliveryZoneConfig, isPincodeServiceable, isLocalDeliveryPincode } from '@/config/delivery'
 
 export interface PincodeCheckResult {
   available: boolean
@@ -8,10 +9,8 @@ export interface PincodeCheckResult {
   message: string
 }
 
-// Mock check — replace with a real serviceability API call.
-// Deterministic on the pincode so the UI behaves consistently in demos.
 export async function checkPincode(pincode: string): Promise<PincodeCheckResult> {
-  await new Promise((r) => setTimeout(r, 400))
+  await new Promise((r) => setTimeout(r, 300))
 
   const isValid = /^\d{6}$/.test(pincode)
   if (!isValid) {
@@ -24,25 +23,24 @@ export async function checkPincode(pincode: string): Promise<PincodeCheckResult>
     }
   }
 
-  const lastDigit = Number(pincode[pincode.length - 1])
-  const isLocal = lastDigit % 3 === 0
-  const isServiceable = lastDigit !== 9
-
-  if (!isServiceable) {
+  if (!isPincodeServiceable(pincode)) {
     return {
       available: false,
       pincode,
       estimatedDays: '',
       localDeliveryAvailable: false,
-      message: 'Sorry, delivery is currently unavailable to this pincode.',
+      message:
+        'Sorry, we currently only deliver to Sultanpur (228001). Visit our store or check back soon as we expand delivery areas.',
     }
   }
+
+  const isLocal = isLocalDeliveryPincode(pincode) && businessConfig.localDeliveryEnabled
 
   return {
     available: true,
     pincode,
-    estimatedDays: isLocal ? 'Today / Tomorrow' : '2-3 days',
-    localDeliveryAvailable: isLocal && businessConfig.localDeliveryEnabled,
+    estimatedDays: isLocal ? deliveryZoneConfig.localDeliveryEstimate : deliveryZoneConfig.standardDeliveryDays,
+    localDeliveryAvailable: isLocal,
     message: isLocal
       ? 'Local delivery available in your area.'
       : 'Delivery available to this pincode.',

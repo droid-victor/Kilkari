@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Product, AgeGroup } from '@/types/product'
 import { fetchAllProductsOnce, saveProduct } from '@/services/inventoryService'
 import { isFirebaseConfigured } from '@/config/firebase'
 import { slugify } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
+import { ImageUploadField } from '@/components/admin/ImageUploadField'
 import { adminProductFormSchema, type AdminProductFormValues } from '@/pages/admin/adminProductSchema'
 
 const emptyValues: AdminProductFormValues = {
@@ -131,6 +132,7 @@ export function AdminProductFormPage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<AdminProductFormValues>({
     resolver: zodResolver(adminProductFormSchema),
@@ -239,13 +241,11 @@ export function AdminProductFormPage() {
         </div>
 
         <div>
-          <label className={labelClass}>Image URLs (one per line, or comma-separated)</label>
-          <textarea
-            rows={3}
-            className={inputClass}
-            style={{ height: 'auto' }}
-            placeholder="https://..."
-            {...register('images')}
+          <label className={labelClass}>Product Images</label>
+          <Controller
+            name="images"
+            control={control}
+            render={({ field }) => <ImageUploadField value={field.value} onChange={field.onChange} />}
           />
           {errors.images && <p className={errorClass}>{errors.images.message}</p>}
         </div>

@@ -77,3 +77,47 @@ export interface WishlistItem {
   productId: string
   addedAt: string
 }
+
+export interface CustomerProfile {
+  uid: string
+  name: string
+  email: string
+  phone?: string
+  createdAt: string
+}
+
+export interface OrderItem {
+  productId: string
+  name: string
+  slug: string
+  image: string
+  size: string
+  color: string
+  quantity: number
+  price: number
+}
+
+export type OrderStatus = 'placed' | 'confirmed' | 'packed' | 'shipped' | 'delivered'
+export type DeliveryMethod = 'delivery' | 'pickup'
+export type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet' | 'cod'
+
+export interface Order {
+  id: string
+  orderNumber: string
+  userId: string
+  items: OrderItem[]
+  address: {
+    fullName: string
+    phone: string
+    line1: string
+    city: string
+    pincode: string
+  }
+  deliveryMethod: DeliveryMethod
+  paymentMethod: PaymentMethod
+  subtotal: number
+  deliveryFee: number
+  total: number
+  status: OrderStatus
+  createdAt: string
+}
