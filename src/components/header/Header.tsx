@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { AnnouncementBar } from '@/components/header/AnnouncementBar'
 import { SearchBar } from '@/components/header/SearchBar'
 import { Portal } from '@/components/common/Portal'
+import { AnimatedLogo } from '@/components/common/AnimatedLogo'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import { mainNavLinks } from '@/constants/navigation'
 import { brandConfig } from '@/config/brand'
@@ -34,11 +35,7 @@ export function Header() {
         </button>
 
         <Link to="/" className="shrink-0" aria-label={`${brandConfig.name} home`}>
-          <img
-            src={brandConfig.logoHeader}
-            alt={brandConfig.name}
-            className="h-9 lg:h-11 w-auto"
-          />
+          <AnimatedLogo alt={brandConfig.name} className="h-9 lg:h-11" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-6 ml-4">
@@ -125,7 +122,7 @@ export function Header() {
             />
             <div className="fixed left-0 top-0 bottom-0 w-[82%] max-w-xs bg-cream-50 shadow-lifted flex flex-col">
               <div className="flex items-center justify-between h-16 px-4 border-b border-ink-900/8 shrink-0">
-                <img src={brandConfig.logoHeader} alt={brandConfig.name} className="h-8 w-auto" />
+                <AnimatedLogo alt={brandConfig.name} className="h-8" />
                 <button
                   type="button"
                   aria-label="Close menu"

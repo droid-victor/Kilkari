@@ -9,7 +9,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { db, isFirebaseConfigured } from '@/config/firebase'
-import type { Order, OrderItem, DeliveryMethod, PaymentMethod } from '@/types/product'
+import type { Order, OrderItem, DeliveryMethod, PaymentMethod, OrderLocation } from '@/types/product'
 
 const ORDERS_COLLECTION = 'orders'
 
@@ -18,9 +18,10 @@ function generateOrderNumber(): string {
 }
 
 export async function placeOrder(input: {
-  userId: string
+  userId: string | null
   items: OrderItem[]
   address: Order['address']
+  location?: OrderLocation | null
   deliveryMethod: DeliveryMethod
   paymentMethod: PaymentMethod
   subtotal: number
@@ -40,6 +41,7 @@ export async function placeOrder(input: {
     userId: input.userId,
     items: input.items,
     address: input.address,
+    location: input.location ?? null,
     deliveryMethod: input.deliveryMethod,
     paymentMethod: input.paymentMethod,
     subtotal: input.subtotal,
@@ -63,6 +65,7 @@ export async function getOrdersForUser(userId: string): Promise<Order[]> {
       userId: data.userId,
       items: data.items,
       address: data.address,
+      location: data.location ?? null,
       deliveryMethod: data.deliveryMethod,
       paymentMethod: data.paymentMethod,
       subtotal: data.subtotal,
@@ -93,6 +96,7 @@ export async function getOrderByNumberAndPhone(
     userId: data.userId,
     items: data.items,
     address: data.address,
+    location: data.location ?? null,
     deliveryMethod: data.deliveryMethod,
     paymentMethod: data.paymentMethod,
     subtotal: data.subtotal,
@@ -114,6 +118,7 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     userId: data.userId,
     items: data.items,
     address: data.address,
+    location: data.location ?? null,
     deliveryMethod: data.deliveryMethod,
     paymentMethod: data.paymentMethod,
     subtotal: data.subtotal,

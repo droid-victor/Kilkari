@@ -99,12 +99,17 @@ export interface OrderItem {
 
 export type OrderStatus = 'placed' | 'confirmed' | 'packed' | 'shipped' | 'delivered'
 export type DeliveryMethod = 'delivery' | 'pickup'
-export type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet' | 'cod'
+export type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet' | 'cod' | 'whatsapp'
+
+export interface OrderLocation {
+  latitude: number
+  longitude: number
+}
 
 export interface Order {
   id: string
   orderNumber: string
-  userId: string
+  userId: string | null
   items: OrderItem[]
   address: {
     fullName: string
@@ -113,6 +118,7 @@ export interface Order {
     city: string
     pincode: string
   }
+  location?: OrderLocation | null
   deliveryMethod: DeliveryMethod
   paymentMethod: PaymentMethod
   subtotal: number

@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'react'
 import clsx from 'clsx'
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'whatsapp'
 type Size = 'sm' | 'md' | 'lg'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,6 +20,7 @@ const variantStyles: Record<Variant, string> = {
     'bg-transparent text-ink-900 border border-ink-900/20 hover:border-ink-900/40 hover:bg-ink-900/[0.03] disabled:opacity-40',
   ghost: 'bg-transparent text-ink-900 hover:bg-ink-900/[0.05] disabled:opacity-40',
   danger: 'bg-error-500 text-cream-50 hover:brightness-95 disabled:opacity-40',
+  whatsapp: 'bg-sage-600 text-cream-50 hover:brightness-95 active:brightness-95 disabled:bg-ink-400/40',
 }
 
 const sizeStyles: Record<Size, string> = {

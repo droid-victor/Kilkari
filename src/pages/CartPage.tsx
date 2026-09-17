@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Minus, Plus, Trash2, MessageCircle, ShoppingBag } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 import type { Product } from '@/types/product'
 import { useCartStore } from '@/store/cartStore'
 import { getAllProducts } from '@/services/productService'
 import { formatPrice } from '@/utils/format'
 import { businessConfig } from '@/config/business'
 import { Button } from '@/components/ui/Button'
-import { buildWhatsappUrl, cartOrderMessage } from '@/services/whatsappService'
+import { WhatsappOrderPanel } from '@/components/cart/WhatsappOrderPanel'
 import { getEffectivePrice } from '@/utils/sale'
 
 export function CartPage() {
   const items = useCartStore((s) => s.items)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
   const removeItem = useCartStore((s) => s.removeItem)
+  const clearCart = useCartStore((s) => s.clearCart)
   const [products, setProducts] = useState<Product[]>([])
-  const navigate = useNavigate()
 
   useEffect(() => {
     getAllProducts().then(setProducts)
@@ -149,29 +149,13 @@ export function CartPage() {
               </div>
             </div>
 
-            <Button size="lg" onClick={() => navigate('/checkout')}>
-              Proceed to Checkout
-            </Button>
-
-            <a
-              href={buildWhatsappUrl(
-                cartOrderMessage(
-                  lineItems.map(({ item, product }) => ({
-                    name: product.name,
-                    size: item.size,
-                    color: item.color,
-                    quantity: item.quantity,
-                    price: getEffectivePrice(product),
-                  })),
-                  total,
-                ),
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 h-12 rounded-xl border border-sage-600 text-sage-600 text-sm font-medium hover:bg-sage-50"
-            >
-              <MessageCircle size={16} /> Order on WhatsApp
-            </a>
+            <WhatsappOrderPanel
+              lineItems={lineItems}
+              subtotal={subtotal}
+              deliveryFee={deliveryFee}
+              total={total}
+              onOrdered={clearCart}
+            />
           </div>
         )}
       </div>

@@ -32,13 +32,16 @@ export function Hero() {
         </div>
 
         <div className="order-1 lg:order-2 aspect-[4/3] sm:aspect-[16/10] lg:aspect-square rounded-card overflow-hidden bg-cream-200">
-          <img
-            src="https://images.unsplash.com/photo-1544776193-352d25ca82cd?auto=format&fit=crop&w=1200&q=80"
-            alt="Kids wearing colourful outfits and playing with toys"
+          <video
+            src="/videos/hero-clothing.mp4"
+            poster="/videos/hero-clothing-poster.jpg"
             className="h-full w-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-label="Children's outfits displayed on wooden hangers"
           />
         </div>
       </div>

@@ -21,11 +21,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Orders: a signed-in customer can create their own order and read only
-    // their own orders (matched by userId); the admin can read/update/delete
-    // any order (e.g. to advance order status).
+    // Orders: anyone can create an order (WhatsApp ordering supports guests
+    // who aren't signed in — userId is null for those); a signed-in
+    // customer's order must be tagged with their own uid, not someone
+    // else's. Reading is restricted: a signed-in customer can read only
+    // their own orders, guest orders are not readable back (no account to
+    // view "my orders" with) — only the admin can read/update/delete any
+    // order, e.g. to advance status.
     match /orders/{orderId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow create: if request.resource.data.userId == null ||
+        (request.auth != null && request.resource.data.userId == request.auth.uid);
       allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
       allow update, delete: if isAdmin();
     }
