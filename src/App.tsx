@@ -42,7 +42,7 @@ function App() {
           <Route path="shop" element={<ShopPage title="Shop All" />} />
           <Route path="boys" element={<ShopPage title="Boys" gender="boys" />} />
           <Route path="girls" element={<ShopPage title="Girls" gender="girls" />} />
-          <Route path="baby" element={<ShopPage title="Baby" gender="baby" />} />
+          <Route path="New Born" element={<ShopPage title="New Born" gender="New Born" />} />
           <Route path="clothing" element={<ShopPage title="Clothing" category="clothing" />} />
           <Route path="footwear" element={<ShopPage title="Footwear" category="footwear" />} />
           <Route path="toys" element={<ShopPage title="Toys" category="toys" />} />
@@ -61,7 +61,7 @@ function App() {
           />
           <Route
             path="newborn"
-            element={<ShopPage title="Welcome, Little One" gender="baby" description="Everything for your newborn." />}
+            element={<ShopPage title="Welcome, Little One" gender="New Born" description="Everything for your newborn." />}
           />
 
           <Route path="search" element={<SearchPage />} />

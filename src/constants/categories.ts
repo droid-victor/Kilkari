@@ -39,7 +39,7 @@ export interface GenderTile {
 export const genderTiles: GenderTile[] = [
   { label: 'Boys', value: 'boys', path: '/boys', image: 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?auto=format&fit=crop&w=800&q=80' },
   { label: 'Girls', value: 'girls', path: '/girls', image: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Baby', value: 'baby', path: '/baby', image: 'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?auto=format&fit=crop&w=800&q=80' },
+  { label: 'New Born', value: 'New Born', path: '/New Born', image: 'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?auto=format&fit=crop&w=800&q=80' },
 ]
 
 export const shopUnderPrices = [299, 499, 999, 1499, 2499]

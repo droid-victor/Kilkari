@@ -1,4 +1,4 @@
-export type Gender = 'boys' | 'girls' | 'baby' | 'unisex'
+export type Gender = 'boys' | 'girls' | 'New Born' | 'unisex'
 
 export type AgeGroup =
   | '0-3m'

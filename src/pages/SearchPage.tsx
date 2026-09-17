@@ -6,7 +6,7 @@ import { searchProducts } from '@/services/productService'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { SearchBar } from '@/components/header/SearchBar'
 
-const popularSearches = ['party dress', 'school shoes', 'soft toys', 'baby rompers', 'building blocks']
+const popularSearches = ['party dress', 'school shoes', 'soft toys', 'New Born rompers', 'building blocks']
 
 export function SearchPage() {
   const [searchParams] = useSearchParams()

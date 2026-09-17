@@ -4,7 +4,7 @@ import type { AgeGroup, Gender } from '@/types/product'
 const genderOptions: { value: Gender; label: string }[] = [
   { value: 'boys', label: 'Boys' },
   { value: 'girls', label: 'Girls' },
-  { value: 'baby', label: 'Baby' },
+  { value: 'New Born', label: 'New Born' },
   { value: 'unisex', label: 'Unisex' },
 ]
 

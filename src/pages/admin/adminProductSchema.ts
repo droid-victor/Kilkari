@@ -9,7 +9,7 @@ export const adminProductFormSchema = z.object({
   brand: z.string().min(1, 'Brand is required'),
   category: z.enum(['clothing', 'footwear', 'toys', 'accessories']),
   subcategory: z.string().min(1, 'Subcategory is required'),
-  gender: z.enum(['boys', 'girls', 'baby', 'unisex']),
+  gender: z.enum(['boys', 'girls', 'New Born', 'unisex']),
   ageGroups: z.string().min(1, 'Select at least one age group'),
   description: z.string().min(1, 'Description is required'),
   shortDescription: z.string().min(1, 'Short description is required'),

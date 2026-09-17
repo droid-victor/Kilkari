@@ -105,6 +105,17 @@ export function StorePage() {
       </section>
 
       <section className="container-page py-10 border-t border-ink-900/8">
+        <h2 className="font-display text-2xl font-semibold text-ink-900 mb-4">Store Photos</h2>
+        <div className="rounded-card overflow-hidden bg-cream-200 max-w-2xl">
+          <img
+            src="/images/store/storefront.webp"
+            alt={`${storeConfig.name} storefront`}
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      </section>
+
+      <section className="container-page py-10 border-t border-ink-900/8">
         <h2 className="font-display text-2xl font-semibold text-ink-900 mb-2">Why Visit Us</h2>
         <ul className="grid sm:grid-cols-2 gap-3 mt-4 text-sm text-ink-800">
           <li>Wide collection of kids clothing, footwear, toys and accessories</li>

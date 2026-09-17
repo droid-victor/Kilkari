@@ -7,7 +7,7 @@ export const mainNavLinks: NavLink[] = [
   { label: 'New Arrivals', path: '/shop?filter=new' },
   { label: 'Boys', path: '/boys' },
   { label: 'Girls', path: '/girls' },
-  { label: 'Baby', path: '/baby' },
+  { label: 'New Born', path: '/New Born' },
   { label: 'Clothing', path: '/clothing' },
   { label: 'Footwear', path: '/footwear' },
   { label: 'Toys', path: '/toys' },
@@ -18,7 +18,7 @@ export const mainNavLinks: NavLink[] = [
 export const footerShopLinks: NavLink[] = [
   { label: 'Boys', path: '/boys' },
   { label: 'Girls', path: '/girls' },
-  { label: 'Baby', path: '/baby' },
+  { label: 'New Born', path: '/New Born' },
   { label: 'Clothing', path: '/clothing' },
   { label: 'Footwear', path: '/footwear' },
   { label: 'Toys', path: '/toys' },

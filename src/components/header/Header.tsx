@@ -34,9 +34,11 @@ export function Header() {
         </button>
 
         <Link to="/" className="shrink-0" aria-label={`${brandConfig.name} home`}>
-          <span className="font-display text-2xl lg:text-[28px] font-semibold text-ink-900">
-            {brandConfig.wordmark}
-          </span>
+          <img
+            src={brandConfig.logoHeader}
+            alt={brandConfig.name}
+            className="h-9 lg:h-11 w-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-6 ml-4">
@@ -123,7 +125,7 @@ export function Header() {
             />
             <div className="fixed left-0 top-0 bottom-0 w-[82%] max-w-xs bg-cream-50 shadow-lifted flex flex-col">
               <div className="flex items-center justify-between h-16 px-4 border-b border-ink-900/8 shrink-0">
-                <span className="font-display text-xl font-semibold">{brandConfig.wordmark}</span>
+                <img src={brandConfig.logoHeader} alt={brandConfig.name} className="h-8 w-auto" />
                 <button
                   type="button"
                   aria-label="Close menu"

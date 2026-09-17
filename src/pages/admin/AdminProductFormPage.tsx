@@ -216,7 +216,7 @@ export function AdminProductFormPage() {
             <select className={inputClass} {...register('gender')}>
               <option value="boys">Boys</option>
               <option value="girls">Girls</option>
-              <option value="baby">Baby</option>
+              <option value="New Born">New Born</option>
               <option value="unisex">Unisex</option>
             </select>
           </div>
