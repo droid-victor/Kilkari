@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Phone, MessageCircle, Mail, MapPin } from 'lucide-react'
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import { storeGeneralInquiryUrl } from '@/services/whatsappService'
 import { Button } from '@/components/ui/Button'
 
 export function ContactPage() {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   const [submitted, setSubmitted] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {

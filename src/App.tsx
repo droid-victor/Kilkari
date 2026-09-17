@@ -30,6 +30,7 @@ import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
 import { AdminProductListPage } from '@/pages/admin/AdminProductListPage'
 import { AdminProductFormPage } from '@/pages/admin/AdminProductFormPage'
 import { AdminSalesPage } from '@/pages/admin/AdminSalesPage'
+import { AdminStoreSettingsPage } from '@/pages/admin/AdminStoreSettingsPage'
 
 function App() {
   return (
@@ -104,6 +105,7 @@ function App() {
           <Route path="products/new" element={<AdminProductFormPage />} />
           <Route path="products/:id" element={<AdminProductFormPage />} />
           <Route path="sales" element={<AdminSalesPage />} />
+          <Route path="store-settings" element={<AdminStoreSettingsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

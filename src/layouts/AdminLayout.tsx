@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Package, LayoutDashboard, LogOut, ExternalLink, Tag } from 'lucide-react'
+import { Package, LayoutDashboard, LogOut, ExternalLink, Tag, Store } from 'lucide-react'
 import clsx from 'clsx'
 import { brandConfig } from '@/config/brand'
 import { useAuthStore } from '@/store/authStore'
@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
   { label: 'Products & Inventory', path: '/admin/products', icon: Package, end: false },
   { label: 'Sales & Discounts', path: '/admin/sales', icon: Tag, end: false },
+  { label: 'Store Settings', path: '/admin/store-settings', icon: Store, end: false },
 ]
 
 export function AdminLayout() {

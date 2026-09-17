@@ -1,10 +1,11 @@
 import { MapPin, Phone, MessageCircle, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import { storeGeneralInquiryUrl } from '@/services/whatsappService'
 import { StoreMap } from '@/components/store/StoreMap'
 
 export function StoreLocationCTA() {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   return (
     <section className="container-page py-10 sm:py-14">
       <div className="rounded-card bg-sage-50 p-6 sm:p-10 grid lg:grid-cols-2 gap-8 items-center">

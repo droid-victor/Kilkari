@@ -1,9 +1,10 @@
 import { Star } from 'lucide-react'
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import { googleReviews } from '@/services/reviewService'
 import { SectionHeader } from '@/components/home/SectionHeader'
 
 export function GoogleReviewsSection() {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   return (
     <section className="container-page py-10 sm:py-14">
       <SectionHeader title="Loved by Parents" subtitle="Trusted by local families" />

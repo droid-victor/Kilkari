@@ -38,6 +38,13 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Store settings (hours, contact info, social links, etc.): public read
+    // (storefront displays it everywhere), admin-only write.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Everything else: locked down by default.
     match /{document=**} {
       allow read, write: if false;

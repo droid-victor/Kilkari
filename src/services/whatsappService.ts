@@ -1,4 +1,4 @@
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import type { Product } from '@/types/product'
 
 function toWhatsappNumber(raw: string): string {
@@ -6,7 +6,7 @@ function toWhatsappNumber(raw: string): string {
 }
 
 export function buildWhatsappUrl(message: string): string {
-  const number = toWhatsappNumber(storeConfig.whatsapp)
+  const number = toWhatsappNumber(useStoreSettingsStore.getState().settings.whatsapp)
   const encoded = encodeURIComponent(message)
   return `https://wa.me/${number}?text=${encoded}`
 }
@@ -33,5 +33,6 @@ export function cartOrderMessage(
 }
 
 export function storeGeneralInquiryUrl(): string {
-  return buildWhatsappUrl(`Hi, I have a question about products at ${storeConfig.name}.`)
+  const name = useStoreSettingsStore.getState().settings.name
+  return buildWhatsappUrl(`Hi, I have a question about products at ${name}.`)
 }

@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { Phone, MessageCircle } from 'lucide-react'
 import { SocialIcon } from '@/components/ui/SocialIcon'
 import { brandConfig } from '@/config/brand'
-import { storeConfig } from '@/config/store'
+import { storeConfig as staticStoreConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import {
   footerShopLinks,
   footerCareLinks,
@@ -13,11 +14,11 @@ import {
 function FooterColumn({ title, links }: { title: string; links: { label: string; path: string }[] }) {
   return (
     <div>
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-400 mb-3">{title}</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-cream-100/50 mb-3">{title}</h3>
       <ul className="flex flex-col gap-2.5">
         {links.map((link) => (
           <li key={link.path}>
-            <Link to={link.path} className="text-sm text-ink-800 hover:text-terracotta-600">
+            <Link to={link.path} className="text-sm text-cream-100/80 hover:text-cream-50">
               {link.label}
             </Link>
           </li>
@@ -29,6 +30,7 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 
 export function Footer() {
   const year = new Date().getFullYear()
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
 
   return (
     <footer className="bg-ink-900 text-cream-100 mt-16 pb-20 lg:pb-0">
@@ -83,7 +85,7 @@ export function Footer() {
 
       <div className="container-page py-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-cream-50/10 text-xs text-cream-100/60">
         <p>
-          &copy; {year} {storeConfig.legalName}. All Rights Reserved.
+          &copy; {year} {staticStoreConfig.legalName}. All Rights Reserved.
         </p>
         <div className="flex items-center gap-4">
           <a href={`tel:${storeConfig.phone}`} className="flex items-center gap-1.5 hover:text-cream-50">

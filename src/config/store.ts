@@ -1,5 +1,13 @@
 /**
- * STORE CONFIGURATION — SOURCE OF TRUTH FOR REAL-WORLD STORE DATA
+ * STORE CONFIGURATION — DEFAULT/SEED DATA ONLY
+ *
+ * This is the fallback used before Firebase is connected, and the seed data
+ * the first time /admin/store-settings saves to Firestore. Once that happens,
+ * Firestore (settings/store) is the live source of truth for everything the
+ * owner can edit from /admin/store-settings — hours, phone, WhatsApp, email,
+ * address, coordinates, social links, rating — see storeSettingsService.ts
+ * and storeSettingsStore.ts. Editing this file only changes what a fresh,
+ * never-configured deployment starts out showing.
  *
  * Name, address, phone, WhatsApp, coordinates and the Google Maps /
  * Directions URLs below are REAL, as provided/verified by the store owner.
@@ -9,14 +17,14 @@
  * resolves through a JavaScript/session-gated redirect that triggers
  * Google's automated-traffic check):
  *   - rating / reviewCount
- *   - openingHours (per day)
  *   - reviews (see reviewService.ts) — short excerpts only, attributed, unaltered
  *   - photos (exported/downloaded from the profile, with permission)
  *   - parkingInfo
  *   - email (currently a placeholder domain)
  *
- * To finish this: open the link above while signed in and copy those
- * fields from the profile, then set isDataVerified to true.
+ * To finish this: open the link above while signed in and copy those fields
+ * in via /admin/store-settings (or here, before first save), then set
+ * isDataVerified to true.
  */
 
 export interface OpeningHour {
@@ -86,14 +94,16 @@ export const storeConfig: StoreConfig = {
   // PLACEHOLDER — could not fetch due to Google bot-check; copy from the profile
   rating: null,
   reviewCount: null,
+  // Default hours — edit the real ones anytime from /admin/store-settings
+  // once Firebase is connected; that becomes the live source of truth.
   openingHours: [
-    { day: "Monday", hours: "PLACEHOLDER" },
-    { day: "Tuesday", hours: "PLACEHOLDER" },
-    { day: "Wednesday", hours: "PLACEHOLDER" },
-    { day: "Thursday", hours: "PLACEHOLDER" },
-    { day: "Friday", hours: "PLACEHOLDER" },
-    { day: "Saturday", hours: "PLACEHOLDER" },
-    { day: "Sunday", hours: "PLACEHOLDER" },
+    { day: "Monday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Tuesday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Wednesday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Thursday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Friday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Saturday", hours: "9:00 AM - 9:00 PM" },
+    { day: "Sunday", hours: "9:00 AM - 9:00 PM" },
   ],
   photos: [],
   parkingInfo: "PLACEHOLDER — confirm parking availability near store",

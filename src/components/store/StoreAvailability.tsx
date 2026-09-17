@@ -1,8 +1,9 @@
 import { Store, PackageCheck, PackageX } from 'lucide-react'
 import type { Product } from '@/types/product'
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 
 export function StoreAvailability({ product }: { product: Product }) {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   const availableAtStore = product.storeStock > 0
   const availableOnline = product.onlineStock > 0
 

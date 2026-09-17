@@ -83,26 +83,34 @@ cards, PDP, cart, checkout, and the `/sale` listing page — so a scheduled sale
 starts and ends on its own with no server/cron job required, just by comparing
 against `new Date()` on each read.
 
-## ⚠️ Store data still needs finishing touches
+## Store settings (hours, contact info, social links)
 
-`src/config/store.ts` holds real data where available: **Kilkari Kids Shop**,
-address (Infront of Ram Handloom, Prayagraj Road, Sultanpur, UP 228001), phone/
-WhatsApp, and Google Maps coordinates/links (resolved from
-https://share.google/CLDxiyny8aKFnTSPX). Still marked **PLACEHOLDER** because they
-couldn't be fetched automatically (the share link redirects through a session-gated
-page that triggers Google's automated-traffic check):
+All the store-identity data shown across the site — opening hours, phone,
+WhatsApp, email, address, coordinates, Google Maps/Business links, rating, and
+social links (Instagram, Facebook, YouTube) — is editable at
+`/admin/store-settings` once Firebase is connected. It's stored in Firestore
+(`settings/store`) and read live everywhere it's shown: footer, homepage store
+CTA, `/store`, `/contact`, `/faq`, `/privacy`. Default opening hours are
+9:00 AM–9:00 PM every day until changed.
 
-- `rating` / `reviewCount`
-- `openingHours` (per day)
-- `reviews` in `src/services/reviewService.ts` — add short, unaltered, attributed
-  excerpts only, with permission
-- `photos`, `parkingInfo`, real `email`
+`src/config/store.ts` is only the **seed/fallback** — the values a fresh,
+never-configured deployment starts out with, and what `/admin/store-settings`
+pre-fills the first time it loads before anything's been saved to Firestore.
+Editing that file has no effect once real settings exist in Firestore.
 
-Open the Business Profile link yourself and copy those fields in, then set
-`isDataVerified: true`.
+Still **PLACEHOLDER** in that seed data — could not be fetched automatically
+(the Google Business Profile share link https://share.google/CLDxiyny8aKFnTSPX
+redirects through a session-gated page that triggers Google's automated-traffic
+check): `rating` / `reviewCount`, `reviews` in `src/services/reviewService.ts`
+(add short, unaltered, attributed excerpts only, with permission), `photos`,
+`parkingInfo`, and the real `email` domain. Open the Business Profile link
+yourself and enter those fields via `/admin/store-settings` (or the seed file,
+before first save).
 
 Business policy knobs (delivery fees, COD, return window, coupons, etc.) live in
 `src/config/business.ts`. Brand name/tagline live in `src/config/brand.ts`.
+Delivery serviceability (which pincodes can order delivery) lives in
+`src/config/delivery.ts` — currently only `228001` (Sultanpur).
 
 ## Product images
 
@@ -141,11 +149,17 @@ manage products going forward through `/admin` once Firebase is connected.
   Account, Orders, Addresses, 404.
 - **Admin panel** (`/admin`, live and connected to Firebase): Auth login gated
   to one owner email, dashboard with stock stats, product list with inline
-  stock editing, add/edit/delete product forms (react-hook-form + zod), and a
-  sales/discount campaign tool (`/admin/sales`) with bulk selection and
-  optional scheduling. Firestore security rules restrict writes to the admin
-  email; storefront reads fall back to mock data if Firebase is ever
-  unconfigured (e.g. a fresh clone without `.env.local`).
+  stock editing, add/edit/delete product forms with file-upload or URL images
+  (react-hook-form + zod), a sales/discount campaign tool (`/admin/sales`) with
+  bulk selection and optional scheduling, and a store settings page
+  (`/admin/store-settings`) for hours/contact/address/social links. Firestore
+  security rules restrict writes to the admin email; storefront reads fall
+  back to mock/seed data if Firebase is ever unconfigured (e.g. a fresh clone
+  without `.env.local`).
+- **Customer accounts**: signup/login via Firebase Auth, `/account` with a
+  working logout, orders require sign-in and persist per-customer in
+  Firestore, `/orders` shows real order history, `/track-order` looks up
+  orders by number + phone.
 - **Deployed** to Firebase Hosting at https://kilkari.web.app.
 
 ## Not yet built (later phases from the original spec)
@@ -163,9 +177,11 @@ src/
   components/   # organized by domain (header, footer, product, cart, store, ...)
   pages/        # route-level page components (pages/admin/ for the admin panel)
   layouts/      # MainLayout (storefront) and AdminLayout (admin shell)
-  services/     # productService (reads), inventoryService + saleService (writes)
-  store/        # Zustand stores (cart, wishlist, filters, auth)
-  config/       # store.ts, business.ts, brand.ts, firebase.ts, admin.ts
+  services/     # productService (reads), inventoryService + saleService +
+                # storeSettingsService + orderService + customerService (writes)
+  store/        # Zustand stores (cart, wishlist, filters, auth, storeSettings)
+  config/       # store.ts (seed), business.ts, brand.ts, firebase.ts, admin.ts,
+                # delivery.ts (serviceable pincodes)
   constants/    # navigation, categories, mock product data (fallback catalog)
   utils/        # format.ts, sale.ts (effective price / active-sale logic)
   types/        # shared TypeScript types

@@ -1,11 +1,12 @@
 import { MapPin, Phone, MessageCircle, Star, Clock } from 'lucide-react'
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 import { googleReviews } from '@/services/reviewService'
 import { storeGeneralInquiryUrl } from '@/services/whatsappService'
 import { businessConfig } from '@/config/business'
 import { StoreMap } from '@/components/store/StoreMap'
 
 export function StorePage() {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   return (
     <div>
       <section className="container-page py-8 sm:py-12">

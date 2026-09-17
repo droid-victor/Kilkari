@@ -1,6 +1,7 @@
-import { storeConfig } from '@/config/store'
+import { useStoreSettingsStore } from '@/store/storeSettingsStore'
 
 export function StoreMap({ className }: { className?: string }) {
+  const storeConfig = useStoreSettingsStore((s) => s.settings)
   const hasCoordinates = storeConfig.latitude != null && storeConfig.longitude != null
   const mapEmbedUrl = hasCoordinates
     ? `https://www.google.com/maps?q=${storeConfig.latitude},${storeConfig.longitude}&z=16&output=embed`
